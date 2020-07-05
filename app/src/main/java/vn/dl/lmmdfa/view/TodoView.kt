@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import android.widget.FrameLayout
 import android.widget.TextView
 
-class NoteItem @JvmOverloads constructor(
+class TodoView @JvmOverloads constructor(
     ctx: Context,
     attrs: AttributeSet? = null,
     defStyle: Int = 0

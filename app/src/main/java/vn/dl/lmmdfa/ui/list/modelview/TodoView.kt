@@ -8,7 +8,7 @@ import vn.dl.lmmdfa.base.BaseListAdapter
 import vn.dl.lmmdfa.extension.bindView
 import vn.dl.lmmdfa.util.Formats
 
-data class NoteModelView(
+data class TodoView(
     val id: String,
     val content: String,
     val createdAt: Long,

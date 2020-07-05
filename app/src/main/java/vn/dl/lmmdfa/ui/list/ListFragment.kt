@@ -21,19 +21,19 @@ import vn.dl.lmmdfa.common.RecyclerViewLoadMoreDetector
 import vn.dl.lmmdfa.database.AppDatabase
 import vn.dl.lmmdfa.extension.asApp
 import vn.dl.lmmdfa.extension.bindView
-import vn.dl.lmmdfa.model.Note
-import vn.dl.lmmdfa.ui.list.modelview.EmptyModelView
-import vn.dl.lmmdfa.ui.list.modelview.LoadingModelView
-import vn.dl.lmmdfa.ui.list.modelview.NoteModelView
+import vn.dl.lmmdfa.model.Todo
+import vn.dl.lmmdfa.ui.list.modelview.EmptyView
+import vn.dl.lmmdfa.ui.list.modelview.LoadingView
+import vn.dl.lmmdfa.ui.list.modelview.TodoView
 import vn.dl.lmmdfa.util.ui.UiUtils
 
 class ListFragment : BaseFragment<ListState>() {
 
-    private val listNoteAdapter = BaseListAdapter()
+    private val todoAdapter = BaseListAdapter()
 
     private val swipeDeleteCallback = SwipeToDeleteCallback { positionDeleted ->
-        viewModel.deleteNote(positionDeleted)
-        listNoteAdapter.notifyItemRemoved(positionDeleted)
+        viewModel.deleteTodo(positionDeleted)
+        todoAdapter.notifyItemRemoved(positionDeleted)
     }
 
     private val loadMoreDetector = RecyclerViewLoadMoreDetector {
@@ -44,7 +44,7 @@ class ListFragment : BaseFragment<ListState>() {
         object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                val dao = AppDatabase.getInstance(requireContext().asApp()).noteDao()
+                val dao = AppDatabase.getInstance(requireContext().asApp()).todoDao()
                 return ListViewModel(dao) as T
             }
         }
@@ -62,7 +62,7 @@ class ListFragment : BaseFragment<ListState>() {
                 DividerItemDecoration.VERTICAL
             )
         )
-        recyclerViewNoteList.adapter = listNoteAdapter
+        recyclerViewNoteList.adapter = todoAdapter
 
         loadMoreDetector.attachToRecyclerView(recyclerViewNoteList)
 
@@ -74,7 +74,7 @@ class ListFragment : BaseFragment<ListState>() {
             findNavController().navigate(action)
         }
 
-        viewModel.restoreDeletedNoteEvent.observe(viewLifecycleOwner, Observer { deleteNote ->
+        viewModel.restoreDeletedTodoEvent.observe(viewLifecycleOwner, Observer { deleteNote ->
             showRestoreNoteView(deleteNote)
         })
 
@@ -88,20 +88,20 @@ class ListFragment : BaseFragment<ListState>() {
 
         val builds = mutableListOf<BaseListAdapter.BaseModelView>()
 
-        val noteList = state.noteList
+        val noteList = state.todoList
 
         if (noteList.isEmpty()) {
-            builds.add(EmptyModelView)
+            builds.add(EmptyView)
         } else {
-            val notes: List<BaseListAdapter.BaseModelView> = noteList.mapIndexed { idx, note ->
-                NoteModelView(
-                    id = note.uuid,
-                    content = note.content,
-                    createdAt = note.createdAt,
-                    isSelected = note.isSelected,
+            val notes: List<BaseListAdapter.BaseModelView> = noteList.map { todo ->
+                TodoView(
+                    id = todo.uuid,
+                    content = todo.content,
+                    createdAt = todo.createdAt,
+                    isSelected = todo.isSelected,
                     onViewClick = View.OnClickListener {
                         val action =
-                            ListFragmentDirections.actionListFragmentToEditNoteFragment(note.uuid)
+                            ListFragmentDirections.actionListFragmentToEditNoteFragment(todo.uuid)
                         findNavController().navigate(action)
                     }
                 )
@@ -110,13 +110,13 @@ class ListFragment : BaseFragment<ListState>() {
         }
 
         if (noteList.isNotEmpty() && state.currentPage < state.lastPage) {
-            builds.add(LoadingModelView("loading"))
+            builds.add(LoadingView("loading"))
         }
 
-        listNoteAdapter.submitChange(builds)
+        todoAdapter.submitChange(builds)
     }
 
-    private fun showRestoreNoteView(note: Note) {
+    private fun showRestoreNoteView(todo: Todo) {
         UiUtils.showSnakeBar(
             fbtAdd,
             R.string.list_screen_note_restore_confirm,
@@ -124,7 +124,7 @@ class ListFragment : BaseFragment<ListState>() {
             ContextCompat.getColor(requireContext(), R.color.color_snake_bar_action_color),
             Snackbar.LENGTH_LONG
         ) {
-            viewModel.restoreNote(note)
+            viewModel.restoreTodo(todo)
         }
     }
 

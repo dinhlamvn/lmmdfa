@@ -1,30 +1,26 @@
 package vn.dl.lmmdfa.util
 
-import vn.dl.lmmdfa.entity.NoteEntity
-import vn.dl.lmmdfa.model.Note
+import vn.dl.lmmdfa.entity.TodoEntity
+import vn.dl.lmmdfa.model.Todo
 
 object DataMapper {
 
     @JvmStatic
-    fun entitiesNoteToModelsNote(list: List<NoteEntity>): List<Note> =
-        list.map { entityNoteToModelNote(it) }
-
-    @JvmStatic
-    fun entityNoteToModelNote(noteEntity: NoteEntity): Note {
-        return Note(
-            uuid = noteEntity.uuid,
-            content = noteEntity.content,
-            createdAt = noteEntity.createdAt
+    fun todoEntityToTodo(todoEntity: TodoEntity): Todo {
+        return Todo(
+            uuid = todoEntity.uuid,
+            content = todoEntity.content,
+            createdAt = todoEntity.createdAt
         )
     }
 
     @JvmStatic
-    fun modelNoteToEntityNote(note: Note): NoteEntity {
-        return NoteEntity(uuid = note.uuid, content = note.content, createdAt = note.createdAt)
+    fun todoToTodoEntity(todo: Todo): TodoEntity {
+        return TodoEntity(uuid = todo.uuid, content = todo.content, createdAt = todo.createdAt)
     }
 
     @JvmStatic
-    fun newNoteEntity(content: String): NoteEntity {
-        return NoteEntity(content = content, createdAt = System.currentTimeMillis())
+    fun newTodoEntity(content: String): TodoEntity {
+        return TodoEntity(content = content, createdAt = System.currentTimeMillis())
     }
 }

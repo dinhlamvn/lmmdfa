@@ -2,7 +2,7 @@ package vn.dl.lmmdfa.ui.list
 
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import vn.dl.lmmdfa.view.EmptyNoteView
+import vn.dl.lmmdfa.view.EmptyView
 
 class SwipeToDeleteCallback(
     private val onSwiped: (Int) -> Unit
@@ -27,7 +27,7 @@ class SwipeToDeleteCallback(
         recyclerView: RecyclerView,
         viewHolder: RecyclerView.ViewHolder
     ): Int {
-        return if (viewHolder.itemView is EmptyNoteView) 0 else super.getSwipeDirs(
+        return if (viewHolder.itemView is EmptyView) 0 else super.getSwipeDirs(
             recyclerView,
             viewHolder
         )

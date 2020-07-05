@@ -14,7 +14,7 @@ import vn.dl.lmmdfa.database.AppDatabase
 import vn.dl.lmmdfa.extension.asApp
 import vn.dl.lmmdfa.extension.bindView
 
-class EditNoteFragment : BaseFragment<EditState>() {
+class EditFragment : BaseFragment<EditState>() {
 
     private val backPressCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
@@ -22,19 +22,19 @@ class EditNoteFragment : BaseFragment<EditState>() {
             this.remove()
             val text = textInputLayout.editText?.text.toString()
             if (text.isNotEmpty()) {
-                editNoteViewModel.handleNote(text)
+                editViewModel.handleTodoOnBackPress(text)
             } else {
                 activity?.onBackPressed()
             }
         }
     }
 
-    private val editNoteViewModel: EditNoteViewModel by fragmentViewModel {
+    private val editViewModel: EditViewModel by fragmentViewModel {
         object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                val dao = AppDatabase.getInstance(requireContext().asApp()).noteDao()
-                return EditNoteViewModel(dao) as T
+                val dao = AppDatabase.getInstance(requireContext().asApp()).todoDao()
+                return EditViewModel(dao) as T
             }
         }
     }
@@ -47,27 +47,27 @@ class EditNoteFragment : BaseFragment<EditState>() {
 
     override fun postAfterViewCreated(view: View) {
 
-        editNoteViewModel.savedNote.observe(viewLifecycleOwner, Observer { note ->
-            textInputLayout.editText?.setText(note.content)
+        editViewModel.savedTodo.observe(viewLifecycleOwner, Observer { todo ->
+            textInputLayout.editText?.setText(todo.content)
         })
 
         arguments?.let { bundle ->
-            val noteId = EditNoteFragmentArgs.fromBundle(bundle).noteId
+            val noteId = EditFragmentArgs.fromBundle(bundle).todoId
             if (noteId.isNotEmpty()) {
-                editNoteViewModel.setNoteIdAndLoadSavedNote(noteId)
+                editViewModel.getTodoFromDatabase(noteId)
             }
         }
 
-        editNoteViewModel.newNote.observe(viewLifecycleOwner, Observer { newNote ->
+        editViewModel.newTodo.observe(viewLifecycleOwner, Observer { newTodo ->
             Toast.makeText(requireContext(), R.string.added_new_note, Toast.LENGTH_SHORT).show()
             activity?.onBackPressed()
         })
 
-        editNoteViewModel.error.observe(viewLifecycleOwner, Observer { e ->
+        editViewModel.error.observe(viewLifecycleOwner, Observer { e ->
             Toast.makeText(requireContext(), R.string.error, Toast.LENGTH_SHORT).show()
         })
 
-        editNoteViewModel.modifiedNote.observe(this, Observer {
+        editViewModel.modifiedTodo.observe(this, Observer {
             Toast.makeText(requireContext(), "Saved", Toast.LENGTH_SHORT).show()
             activity?.onBackPressed()
         })

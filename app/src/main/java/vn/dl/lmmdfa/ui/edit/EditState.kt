@@ -3,7 +3,7 @@ package vn.dl.lmmdfa.ui.edit
 import vn.dl.lmmdfa.base.BaseViewModel
 
 data class EditState(
-    val uuid: String = "",
+    val todoId: String = "",
     val content: CharSequence = "",
-    val newNote: Boolean = true
+    val newTodo: Boolean = true
 ) : BaseViewModel.ViewModelState

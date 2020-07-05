@@ -18,10 +18,10 @@
     </fragment>
     <fragment
         android:id="@+id/nav_edit"
-        android:name="vn.dl.lmmdfa.ui.edit.EditNoteFragment"
+        android:name="vn.dl.lmmdfa.ui.edit.EditFragment"
         android:label="{title}">
         <argument
-            android:name="noteId"
+            android:name="todoId"
             app:argType="string" />
 
         <argument

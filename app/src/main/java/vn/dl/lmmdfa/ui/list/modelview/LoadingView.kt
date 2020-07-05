@@ -4,9 +4,10 @@ import android.view.View
 import vn.dl.lmmdfa.R
 import vn.dl.lmmdfa.base.BaseListAdapter
 
-object EmptyModelView : BaseListAdapter.BaseModelView() {
+data class LoadingView(val id: String) : BaseListAdapter.BaseModelView() {
+
     override fun id(): String {
-        return "emptyModel"
+        return "loading_$id"
     }
 
     override fun bindView(view: View, adapterPosition: Int) {
@@ -14,6 +15,6 @@ object EmptyModelView : BaseListAdapter.BaseModelView() {
     }
 
     override fun layout(): Int {
-        return R.layout.itemview_empty_list
+        return R.layout.itemview_loading
     }
 }
