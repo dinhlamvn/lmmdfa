@@ -8,5 +8,6 @@ data class ListState(
     val total: Int = 0,
     val currentPage: Int = 1,
     val lastPage: Int = 1,
-    val showLoading: Boolean = true
+    val showLoading: Boolean = true,
+    val showRefreshing: Boolean = false
 ) : BaseViewModel.ViewModelState

@@ -72,8 +72,7 @@ class ListFragment : BaseFragment<ListState>() {
     }
 
     override fun onViewModelStateChanged(state: ListState) {
-        swipeRefreshLayout.isRefreshing =
-            state.todoList.isEmpty()
+        swipeRefreshLayout.isRefreshing = state.showRefreshing
         listController.requestBuild(state)
     }
 

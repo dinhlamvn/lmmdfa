@@ -30,7 +30,7 @@ class ListViewModel(private val dao: TodoDao) :
     private var getTodoDisposable: Disposable? = null
 
     internal fun startRefresh() {
-        setState { copy(showLoading = true) }
+        setState { copy(showLoading = true, showRefreshing = true) }
         refresh()
     }
 
@@ -46,7 +46,7 @@ class ListViewModel(private val dao: TodoDao) :
             .map { list -> list.map { DataMapper.todoEntityToTodo(it) } }
             .subscribeOn(Schedulers.io())
             .execute { list: List<Todo> ->
-                copy(todoList = list, showLoading = false)
+                copy(todoList = list, showLoading = false, showRefreshing = false)
             }
     }
 
