@@ -8,5 +8,5 @@
     <color name="color_black_text">#343434</color>
     <color name="color_selected">#e1e1e1</color>
     <color name="color_snake_bar_action_color">#ffeb3b</color>
-    <color name="color_stroke_light">#AA9F9E</color>
+    <color name="color_stroke_light">#e7e7e7</color>
 </resources>

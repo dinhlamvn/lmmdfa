@@ -1,2 +1,3 @@
+include ':theme'
 rootProject.name='lmmdfa'
 include ':app'

@@ -9,9 +9,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 
-class BaseListAdapter : ListAdapter<BaseListAdapter.BaseModelView, BaseListAdapter.BaseViewHolder>(
-    DiffUtilCallback()
-) {
+class BaseListAdapter :
+    ListAdapter<BaseListAdapter.BaseModelView, BaseListAdapter.BaseViewHolder>(DiffUtilCallback()) {
 
     init {
         setHasStableIds(true)

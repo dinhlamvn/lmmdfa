@@ -1,7 +1,10 @@
 package vn.dl.lmmdfa.ui.edit
 
+import android.content.Context
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.Observer
@@ -10,22 +13,19 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.textfield.TextInputLayout
 import vn.dl.lmmdfa.R
 import vn.dl.lmmdfa.base.BaseFragment
+import vn.dl.lmmdfa.common.navigraph.OnNavigateUpInvoker
 import vn.dl.lmmdfa.database.AppDatabase
 import vn.dl.lmmdfa.extension.asApp
 import vn.dl.lmmdfa.extension.bindView
 
-class EditFragment : BaseFragment<EditState>() {
+class EditFragment : BaseFragment<EditState>(), OnNavigateUpInvoker {
 
     private val backPressCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             this.isEnabled = false
             this.remove()
             val text = textInputLayout.editText?.text.toString()
-            if (text.isNotEmpty()) {
-                editViewModel.handleTodoOnBackPress(text)
-            } else {
-                activity?.onBackPressed()
-            }
+            editViewModel.handleTodoOnBackPress(text)
         }
     }
 
@@ -40,6 +40,13 @@ class EditFragment : BaseFragment<EditState>() {
     }
 
     private val textInputLayout: TextInputLayout by bindView(R.id.text_input_layout)
+
+    override fun navigateUpInvoke() {
+        val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+        imm?.hideSoftInputFromWindow(textInputLayout.editText?.windowToken, 0)
+        val text = textInputLayout.editText?.text.toString()
+        editViewModel.handleTodoOnBackPress(text)
+    }
 
     override fun layoutRes(): Int {
         return R.layout.fragment_edit
@@ -83,5 +90,9 @@ class EditFragment : BaseFragment<EditState>() {
 
     override fun onViewModelStateChanged(state: EditState) {
 
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return super.onOptionsItemSelected(item)
     }
 }

@@ -57,7 +57,7 @@ data class TodoView(
     }
 
     override fun layout(): Int {
-        return R.layout.itemview_note_element
+        return R.layout.todo_itemview
     }
 
     private fun getTitle(): String {

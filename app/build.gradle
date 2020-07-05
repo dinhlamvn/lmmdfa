@@ -54,6 +54,9 @@ dependencies {
   androidTestImplementation 'androidx.test.ext:junit:1.1.1'
   androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
+  // Theme
+  implementation project(':theme')
+
   // ROOM
   def room_version = "2.2.5"
   implementation "androidx.room:room-runtime:$room_version"
@@ -65,4 +68,7 @@ dependencies {
   def rx_android_version = "2.1.1"
   implementation "io.reactivex.rxjava2:rxandroid:$rx_android_version"
   implementation "io.reactivex.rxjava2:rxjava:$rx_version"
+
+  // Swipe refresh layout
+  implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
 }

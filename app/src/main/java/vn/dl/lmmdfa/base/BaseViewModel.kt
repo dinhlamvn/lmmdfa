@@ -75,8 +75,8 @@ abstract class BaseViewModel<S : BaseViewModel.ViewModelState>(viewModelState: S
         compositeDisposable.clear()
     }
 
-    protected fun <T> Observable<T>.execute(block: S.(T) -> S) {
-        subscribe { value ->
+    protected fun <T> Observable<T>.execute(block: S.(T) -> S): Disposable {
+        return subscribe { value ->
             val currentState = viewModelState.value ?: return@subscribe
             val newState = block.invoke(currentState, value)
             setState(newState)

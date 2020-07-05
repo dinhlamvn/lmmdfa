@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
+import vn.dl.lmmdfa.common.navigraph.OnNavigateUpInvoker
 
 class MainActivity : AppCompatActivity() {
 
@@ -47,6 +48,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        return navController.popBackStack()
+        val visibleFragment = supportFragmentManager
+            .findFragmentById(R.id.nav_host_fragment)
+            ?.childFragmentManager
+            ?.fragments
+            ?.getOrNull(0)
+        val navigateUpInvoker = visibleFragment as? OnNavigateUpInvoker
+        navigateUpInvoker?.navigateUpInvoke()
+        return navController.navigateUp()
     }
 }

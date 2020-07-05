@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">iNotebook</string>
+    <string name="app_name">Lmmdfa</string>
     <string name="action_settings">Settings</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
@@ -24,4 +24,5 @@
     <string name="error">Error</string>
     <string name="added_new_note">Added new todo</string>
     <string name="deleted_note">Deleted a todo.</string>
+    <string name="loading">Loading…</string>
 </resources>

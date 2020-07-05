@@ -5,6 +5,7 @@ import io.reactivex.Completable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import vn.dl.lmmdfa.base.BaseViewModel
+import vn.dl.lmmdfa.common.Constants
 import vn.dl.lmmdfa.common.SingleLiveEvent
 import vn.dl.lmmdfa.database.TodoDao
 import vn.dl.lmmdfa.model.Todo
@@ -26,16 +27,27 @@ class ListViewModel(private val dao: TodoDao) :
 
     private var deleteNoteDisposable: Disposable? = null
 
+    private var getTodoDisposable: Disposable? = null
+
+    internal fun startRefresh() {
+        setState { copy(isRefreshing = true) }
+        refresh()
+    }
+
     internal fun refresh() = getState { state ->
         getAllTodo(state.currentPage)
     }
 
     private fun getAllTodo(page: Int) {
-        dao.getAll(20)
+        getTodoDisposable?.dispose()
+        getTodoDisposable = dao.getTodoList(page * Constants.RESULT_PER_PAGE)
             .map { list -> list.map { DataMapper.todoEntityToTodo(it) } }
             .subscribeOn(Schedulers.io())
+            .doOnSubscribe {
+                setState { copy(isRefreshing = false, showLoading = true) }
+            }
             .execute { list: List<Todo> ->
-                copy(todoList = list)
+                copy(todoList = list, showLoading = false)
             }
     }
 
@@ -57,6 +69,6 @@ class ListViewModel(private val dao: TodoDao) :
 
     fun restoreTodo(todo: Todo) {
         deleteNoteDisposable?.dispose()
-        //submitState { copy() }
+        setState { copy() }
     }
 }

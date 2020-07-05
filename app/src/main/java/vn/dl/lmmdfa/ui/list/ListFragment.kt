@@ -9,35 +9,25 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import vn.dl.lmmdfa.R
 import vn.dl.lmmdfa.base.BaseFragment
-import vn.dl.lmmdfa.base.BaseListAdapter
-import vn.dl.lmmdfa.common.RecyclerViewLoadMoreDetector
 import vn.dl.lmmdfa.database.AppDatabase
 import vn.dl.lmmdfa.extension.asApp
 import vn.dl.lmmdfa.extension.bindView
 import vn.dl.lmmdfa.model.Todo
-import vn.dl.lmmdfa.ui.list.modelview.EmptyView
-import vn.dl.lmmdfa.ui.list.modelview.LoadingView
-import vn.dl.lmmdfa.ui.list.modelview.TodoView
 import vn.dl.lmmdfa.util.ui.UiUtils
 
 class ListFragment : BaseFragment<ListState>() {
 
-    private val todoAdapter = BaseListAdapter()
+    private val listController = ListController()
 
     private val swipeDeleteCallback = SwipeToDeleteCallback { positionDeleted ->
         viewModel.deleteTodo(positionDeleted)
-        todoAdapter.notifyItemRemoved(positionDeleted)
-    }
-
-    private val loadMoreDetector = RecyclerViewLoadMoreDetector {
-        //viewModel.loadMore()
     }
 
     private val viewModel: ListViewModel by fragmentViewModel {
@@ -52,25 +42,23 @@ class ListFragment : BaseFragment<ListState>() {
 
     private val fbtAdd: FloatingActionButton by bindView(R.id.fab)
 
+    private val swipeRefreshLayout: SwipeRefreshLayout by bindView(R.id.swipeRefreshLayout)
+
     override fun layoutRes(): Int = R.layout.fragment_list
 
     override fun postAfterViewCreated(view: View) {
-        val recyclerViewNoteList = view.findViewById<RecyclerView>(R.id.recyclerview_note_list)
-        recyclerViewNoteList.addItemDecoration(
-            DividerItemDecoration(
-                requireContext(),
-                DividerItemDecoration.VERTICAL
-            )
-        )
-        recyclerViewNoteList.adapter = todoAdapter
+        swipeRefreshLayout.setOnRefreshListener {
+            viewModel.startRefresh()
+        }
 
-        loadMoreDetector.attachToRecyclerView(recyclerViewNoteList)
-
-        val itemTouchHelper = ItemTouchHelper(swipeDeleteCallback)
-        itemTouchHelper.attachToRecyclerView(recyclerViewNoteList)
+        view.findViewById<RecyclerView>(R.id.recyclerview_note_list).apply {
+            val itemTouchHelper = ItemTouchHelper(swipeDeleteCallback)
+            itemTouchHelper.attachToRecyclerView(this)
+            listController.attachToRecyclerView(this)
+        }
 
         view.findViewById<FloatingActionButton>(R.id.fab).setOnClickListener {
-            val action = ListFragmentDirections.actionListFragmentToEditNoteFragment("")
+            val action = ListFragmentDirections.actionListFragmentToEditFragment("")
             findNavController().navigate(action)
         }
 
@@ -84,36 +72,9 @@ class ListFragment : BaseFragment<ListState>() {
     }
 
     override fun onViewModelStateChanged(state: ListState) {
+        swipeRefreshLayout.isRefreshing = state.isRefreshing
         setTotalNoteToActionBar(state.total)
-
-        val builds = mutableListOf<BaseListAdapter.BaseModelView>()
-
-        val noteList = state.todoList
-
-        if (noteList.isEmpty()) {
-            builds.add(EmptyView)
-        } else {
-            val notes: List<BaseListAdapter.BaseModelView> = noteList.map { todo ->
-                TodoView(
-                    id = todo.uuid,
-                    content = todo.content,
-                    createdAt = todo.createdAt,
-                    isSelected = todo.isSelected,
-                    onViewClick = View.OnClickListener {
-                        val action =
-                            ListFragmentDirections.actionListFragmentToEditNoteFragment(todo.uuid)
-                        findNavController().navigate(action)
-                    }
-                )
-            }
-            builds.addAll(notes)
-        }
-
-        if (noteList.isNotEmpty() && state.currentPage < state.lastPage) {
-            builds.add(LoadingView("loading"))
-        }
-
-        todoAdapter.submitChange(builds)
+        listController.requestBuild(state)
     }
 
     private fun showRestoreNoteView(todo: Todo) {

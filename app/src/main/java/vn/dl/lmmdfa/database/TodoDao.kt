@@ -19,7 +19,7 @@ interface TodoDao {
     fun delete(todoEntity: TodoEntity): Completable
 
     @Query("SELECT * FROM todo_tb LIMIT :limit")
-    fun getAll(limit: Int): Observable<List<TodoEntity>>
+    fun getTodoList(limit: Int): Observable<List<TodoEntity>>
 
     @Query("SELECT * FROM todo_tb WHERE uuid = :todoId")
     fun getTodo(todoId: String): Single<TodoEntity>

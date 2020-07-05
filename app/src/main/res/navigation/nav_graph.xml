@@ -9,7 +9,7 @@
         android:name="vn.dl.lmmdfa.ui.list.ListFragment"
         android:label="@string/list_note_title">
         <action
-            android:id="@+id/action_listFragment_to_editNoteFragment"
+            android:id="@+id/action_listFragment_to_editFragment"
             app:destination="@id/nav_edit"
             app:enterAnim="@anim/enter"
             app:exitAnim="@anim/exit"

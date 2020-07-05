@@ -14,6 +14,6 @@ object EmptyView : BaseListAdapter.BaseModelView() {
     }
 
     override fun layout(): Int {
-        return R.layout.itemview_empty_list
+        return R.layout.empty_itemview
     }
 }
