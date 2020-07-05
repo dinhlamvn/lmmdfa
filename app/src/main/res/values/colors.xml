@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="color_primary">#6200EE</color>
+    <color name="color_primary_dark">#3700B3</color>
+    <color name="color_accent">#03DAC5</color>
+    <color name="color_text_input">#272727</color>
+    <color name="color_created">#979797</color>
+    <color name="color_black_text">#343434</color>
+    <color name="color_selected">#e1e1e1</color>
+    <color name="color_snake_bar_action_color">#ffeb3b</color>
+    <color name="color_stroke_light">#AA9F9E</color>
+</resources>

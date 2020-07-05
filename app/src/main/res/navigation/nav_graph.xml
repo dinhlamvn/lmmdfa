@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/nav_list">
+
+    <fragment
+        android:id="@+id/nav_list"
+        android:name="vn.dl.lmmdfa.ui.list.ListFragment"
+        android:label="@string/list_note_title">
+        <action
+            android:id="@+id/action_listFragment_to_editNoteFragment"
+            app:destination="@id/nav_edit"
+            app:enterAnim="@anim/enter"
+            app:exitAnim="@anim/exit"
+            app:popEnterAnim="@anim/pop_enter"
+            app:popExitAnim="@anim/pop_exit" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_edit"
+        android:name="vn.dl.lmmdfa.ui.edit.EditNoteFragment"
+        android:label="{title}">
+        <argument
+            android:name="noteId"
+            app:argType="string" />
+
+        <argument
+            android:name="title"
+            android:defaultValue="Add new"
+            app:argType="string" />
+    </fragment>
+</navigation>

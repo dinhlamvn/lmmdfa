@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.textfield.TextInputLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/text_input_layout"
+    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="@dimen/text_input_margin"
+    android:hint="@string/your_note">
+
+    <com.google.android.material.textfield.TextInputEditText
+        style="@style/InputBody1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@null"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:inputType="textMultiLine"
+        android:maxLines="256"
+        android:padding="8dp"
+        tools:text="This is my note" />
+
+</com.google.android.material.textfield.TextInputLayout>
