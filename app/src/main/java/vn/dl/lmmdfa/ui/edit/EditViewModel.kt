@@ -23,6 +23,9 @@ class EditViewModel(private val dao: TodoDao) :
     private val _modifiedTodo = SingleLiveEvent<Todo>()
     val modifiedTodo: LiveData<Todo> = _modifiedTodo
 
+    private val _backPress = SingleLiveEvent<Unit>()
+    val backPress: LiveData<Unit> = _backPress
+
     fun getTodoFromDatabase(id: String) {
         setState { copy(newTodo = false, todoId = id) }
         getState { state ->
@@ -45,6 +48,7 @@ class EditViewModel(private val dao: TodoDao) :
     }
 
     private fun addNewTodo(content: String) {
+        if (content.isBlank()) return _backPress.postValue(Unit)
         val newTodo = DataMapper.newTodoEntity(content)
         dao.insert(newTodo)
             .subscribeOn(Schedulers.io())

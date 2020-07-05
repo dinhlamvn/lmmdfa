@@ -78,6 +78,10 @@ class EditFragment : BaseFragment<EditState>(), OnNavigateUpInvoker {
             Toast.makeText(requireContext(), "Saved", Toast.LENGTH_SHORT).show()
             activity?.onBackPressed()
         })
+
+        editViewModel.backPress.observe(this, Observer {
+            activity?.onBackPressed()
+        })
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

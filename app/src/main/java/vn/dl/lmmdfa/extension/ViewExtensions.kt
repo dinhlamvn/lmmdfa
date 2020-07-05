@@ -10,7 +10,7 @@ fun <T : View> Activity.bindView(@IdRes viewId: Int): Lazy<T> {
 }
 
 fun <T : View> Fragment.bindView(@IdRes viewId: Int): Lazy<T> {
-    return lazy { requireView().findViewById(viewId) as T }
+    return lazy { view?.findViewById(viewId) as T }
 }
 
 fun <T : View> View.bindView(@IdRes viewId: Int): Lazy<T> {

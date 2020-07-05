@@ -30,7 +30,7 @@ class ListViewModel(private val dao: TodoDao) :
     private var getTodoDisposable: Disposable? = null
 
     internal fun startRefresh() {
-        setState { copy(isRefreshing = true) }
+        setState { copy(showLoading = true) }
         refresh()
     }
 
@@ -39,25 +39,27 @@ class ListViewModel(private val dao: TodoDao) :
     }
 
     private fun getAllTodo(page: Int) {
-        getTodoDisposable?.dispose()
+        if (getTodoDisposable?.isDisposed == false) {
+            getTodoDisposable?.dispose()
+        }
         getTodoDisposable = dao.getTodoList(page * Constants.RESULT_PER_PAGE)
             .map { list -> list.map { DataMapper.todoEntityToTodo(it) } }
             .subscribeOn(Schedulers.io())
-            .doOnSubscribe {
-                setState { copy(isRefreshing = false, showLoading = true) }
-            }
             .execute { list: List<Todo> ->
                 copy(todoList = list, showLoading = false)
             }
     }
 
     fun deleteTodo(position: Int) = getState { state ->
-        val todo = state.todoList.getOrNull(position) ?: return@getState
-        _restoreDeletedNoteEvent.postValue(todo)
+        val removedTodo = state.todoList.getOrNull(position) ?: return@getState
+        setState {
+            copy(todoList = todoList.filterNot { todo -> todo.uuid == removedTodo.uuid })
+        }
+        _restoreDeletedNoteEvent.postValue(removedTodo)
         deleteNoteDisposable = Completable.timer(5000, TimeUnit.MILLISECONDS)
             .andThen { source ->
                 source.onComplete()
-                dao.delete(DataMapper.todoToTodoEntity(todo))
+                dao.delete(DataMapper.todoToTodoEntity(removedTodo))
                     .subscribe {
                         _deletedEvent.postValue(Unit)
                     }
@@ -67,8 +69,8 @@ class ListViewModel(private val dao: TodoDao) :
             .disposeOnClear()
     }
 
-    fun restoreTodo(todo: Todo) {
+    fun restoreTodo() {
         deleteNoteDisposable?.dispose()
-        setState { copy() }
+        refresh()
     }
 }

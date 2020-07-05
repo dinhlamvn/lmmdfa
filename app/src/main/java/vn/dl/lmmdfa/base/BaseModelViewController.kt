@@ -19,13 +19,20 @@ abstract class BaseModelViewController<S : BaseViewModel.ViewModelState> {
 
     private val mainHandler = Handler(Looper.getMainLooper())
 
+    private var buildRunnable: Runnable? = null
+
     internal fun requestBuild(state: S) {
-        buildModelHandler.post {
+        buildRunnable?.let { runnable ->
+            buildModelHandler.removeCallbacks(runnable)
+        }
+        buildRunnable = Runnable {
             builds.clear()
             buildModelView(state)
             mainHandler.post {
                 baseListAdapter.submitChange(ArrayList(builds))
             }
+        }.also { runnable ->
+            buildModelHandler.post(runnable)
         }
     }
 

@@ -16,6 +16,8 @@ abstract class BaseFragment<S : BaseViewModel.ViewModelState> : Fragment() {
         protected const val KEY_ARGS: String = "fragment_args"
     }
 
+    private var rootView: View? = null
+
     @LayoutRes
     abstract fun layoutRes(): Int
 
@@ -29,7 +31,9 @@ abstract class BaseFragment<S : BaseViewModel.ViewModelState> : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(layoutRes(), container, false)
+        return rootView ?: inflater.inflate(layoutRes(), container, false).also { view ->
+            rootView = view
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

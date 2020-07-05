@@ -2,8 +2,6 @@ package vn.dl.lmmdfa.ui.list
 
 import android.view.View
 import android.widget.Toast
-import androidx.annotation.UiThread
-import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
@@ -69,11 +67,13 @@ class ListFragment : BaseFragment<ListState>() {
         viewModel.deletedEvent.observe(viewLifecycleOwner, Observer {
             Toast.makeText(requireContext(), R.string.deleted_note, Toast.LENGTH_SHORT).show()
         })
+
+        viewModel.refresh()
     }
 
     override fun onViewModelStateChanged(state: ListState) {
-        swipeRefreshLayout.isRefreshing = state.isRefreshing
-        setTotalNoteToActionBar(state.total)
+        swipeRefreshLayout.isRefreshing =
+            state.todoList.isEmpty()
         listController.requestBuild(state)
     }
 
@@ -85,19 +85,7 @@ class ListFragment : BaseFragment<ListState>() {
             ContextCompat.getColor(requireContext(), R.color.color_snake_bar_action_color),
             Snackbar.LENGTH_LONG
         ) {
-            viewModel.restoreTodo(todo)
+            viewModel.restoreTodo()
         }
-    }
-
-    @UiThread
-    private fun setTotalNoteToActionBar(total: Int) {
-        val toolbar: Toolbar = requireActivity().findViewById(R.id.toolbar)
-        val title = getString(R.string.list_screen_tool_bar_title, total)
-        //toolbar.title = title
-    }
-
-    override fun onResume() {
-        super.onResume()
-        viewModel.refresh()
     }
 }
